@@ -1,6 +1,6 @@
+from math import floor, sin
 from typing import List
-from hashing.utils import binary_string_to_hex
-from utils import format_int_to_binary_string
+from hashing.utils import hex_32_bit_shift_left, binary_string_to_hex, modular_addition, format_int_to_binary_string
 from textwrap import wrap
 
 
@@ -37,6 +37,12 @@ def message_to_hex(message_words: List[str]) -> List[int]:
     return [binary_string_to_hex(m) for m in message_words]
 
 
+def f(b, c, d):
+    # F(B, C, D) = (B∧C)∨(¬B∧D)
+    ans = (b & c) | (~b & d)
+    return ans
+    
+
 if __name__ == "__main__":
     text = "They are deterministic"
     assert len(text) <= 56  # 448/8
@@ -47,5 +53,20 @@ if __name__ == "__main__":
     message_words = split_message_block(padded_message_block)
 
     message_words_hex = message_to_hex(message_words)
+    
+    k = [int(hex(floor(abs(sin(i))*(pow(2, 32)))), 16) for i in range(1, 65)]
 
-    print([[m, hex(m), int(hex(m), 16)] for m in message_words_hex])
+    # print([[m, hex(m), int(hex(m), 16)] for m in message_words_hex])
+    
+    ans = f(B, C, D)
+    
+    ans2 = modular_addition(A, ans)
+    ans3 = modular_addition(message_words_hex[0], ans2)
+    
+    ans4 = modular_addition(k[0], ans3)
+    
+    ans5 = hex(hex_32_bit_shift_left(ans4, 7))
+    print(ans5)
+
+    
+    

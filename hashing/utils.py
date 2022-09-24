@@ -1,5 +1,6 @@
 Z = 0x100000000
 
+    
 
 def get_bit_count(binary: str) -> int:
     return len(format(binary, "b"))
@@ -34,3 +35,11 @@ def hex_32_bit_shift_left(hex_num: int, shift: int) -> int:
         binary = binary.zfill(32)
     return binary_string_to_hex(binary[shift:] + binary[:shift])
     
+    
+def bytearray_to_binary_string(array: bytearray) -> str:
+    def access_bit(data, num):
+        base = int(num // 8)
+        shift = int(num % 8)
+        return (data[base] >> shift) & 0x1
+    
+    return ''.join([str(access_bit(array, i)) for i in range(len(array)*8)])

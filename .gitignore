@@ -28,6 +28,7 @@ share/python-wheels/
 MANIFEST
 release.sh
 .vscode/
+ignore/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

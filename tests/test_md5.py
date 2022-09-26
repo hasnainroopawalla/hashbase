@@ -11,5 +11,5 @@ class TestMD5Strings(unittest.TestCase):
         self.assertEqual(MD5().generate_hash("abc"), "900150983cd24fb0d6963f7d28e17f72")
         self.assertEqual(MD5().generate_hash("message digest"), "f96b697d7cb7938d525a2f31aaf161d0")
         self.assertEqual(MD5().generate_hash("abcdefghijklmnopqrstuvwxyz"), "c3fcd3d76192e4007dfb496cca67e13b")
-        # self.assertEqual(MD5().hash("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"), "d174ab98d277d9f5a5611c2c9f419d9f")
-        # self.assertEqual(MD5().hash("12345678901234567890123456789012345678901234567890123456789012345678901234567890"), "57edf4a22be3c955ac49da2e2107b67a")
+        self.assertEqual(MD5().generate_hash("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"), "d174ab98d277d9f5a5611c2c9f419d9f")
+        self.assertEqual(MD5().generate_hash("12345678901234567890123456789012345678901234567890123456789012345678901234567890"), "57edf4a22be3c955ac49da2e2107b67a")

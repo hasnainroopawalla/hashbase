@@ -1,7 +1,7 @@
 from math import floor, sin
 from typing import List
 
-from hashing.utils import left_shift
+from hashing.utils import left_shift, little_endian_to_hex_string
 
 
 class MD5:
@@ -10,7 +10,8 @@ class MD5:
         self.B = 0xEFCDAB89
         self.C = 0x98BADCFE
         self.D = 0x10325476
-        self.constant = [int(hex(floor(abs(sin(i)) * (pow(2, 32)))), 16) for i in range(1, 65)]
+        self.constants = [int(hex(floor(abs(sin(i)) * (pow(2, 32)))), 16) for i in range(1, 65)]
+        self.shifts = ([7, 12, 17, 22] * 4) + ([5, 9, 14, 20] * 4) + ([4, 11, 16, 23] * 4) + ([6, 10, 15, 21] * 4)
     
     
     @staticmethod
@@ -57,8 +58,7 @@ class MD5:
         return y ^ (x | ~z)
     
     
-    def hash(self, text: str):
-        # text = "They are deterministic"
+    def generate_hash(self, text: str) -> str:
         assert len(text) <= 56  # 448/8
 
         msg_in_bytes = bytearray(text, "ascii")
@@ -66,57 +66,46 @@ class MD5:
         message_words = self.split_message_block(padded_message)
         
         curr_A, curr_B, curr_C, curr_D = self.A, self.B, self.C, self.D
-        
+
         for i in range(64):
             # Round 1
             if 0 <= i < 16:
-                p = self.F(curr_B, curr_C, curr_D)
-                m_i = i
-                shift = [7, 12, 17, 22]
+                f = self.F(curr_B, curr_C, curr_D)
+                g = i
 
             # Round 2
             elif 16 <= i < 32:
-                p = self.G(curr_B, curr_C, curr_D)
-                m_i = ((5 * i) + 1) % 16
-                shift = [5, 9, 14, 20]
+                f = self.G(curr_B, curr_C, curr_D)
+                g = ((5 * i) + 1) % 16
 
             # Round 3
             elif 32 <= i < 48:
-                p = self.H(curr_B, curr_C, curr_D)
-                m_i = ((3 * i) + 5) % 16
-                shift = [4, 11, 16, 23]
+                f = self.H(curr_B, curr_C, curr_D)
+                g = ((3 * i) + 5) % 16
 
             # Round 4
             elif 48 <= i < 64:
-                p = self.I(curr_B, curr_C, curr_D)
-                m_i = (7 * i) % 16
-                shift = [6, 10, 15, 21]
-                
-            j = curr_A + p + self.constant[i] + message_words[m_i]
+                f = self.I(curr_B, curr_C, curr_D)
+                g = (7 * i) % 16
             
-            after_shift = curr_B + left_shift(j, shift[i % 4])
+            f = curr_A + f + self.constants[i] + message_words[g]
 
             # 0xFFFFFFFF masks the variable, leaving only the last 8 bits and ignoring the remaining
-            final_new_b = after_shift & 0xFFFFFFFF
-            # p = modular_addition(B, p)
-
-            curr_A, curr_B, curr_C, curr_D = curr_D, final_new_b, curr_B, curr_C
+            curr_A = curr_D
+            curr_D = curr_C
+            curr_C = curr_B
+            curr_B += left_shift(f, self.shifts[i]) & 0xFFFFFFFF
         
         final_A = (curr_A + self.A) & 0xFFFFFFFF
         final_B = (curr_B + self.B) & 0xFFFFFFFF
         final_C = (curr_C + self.C) & 0xFFFFFFFF
         final_D = (curr_D + self.D) & 0xFFFFFFFF
 
-        # print(final_A, final_B, final_C, final_D)
-        # print('LAST', final_A << (32*0))
-        # print('LAST', final_B << (32*1))
-        # print('LAST', final_C << (32*2))
-        # print('LAST', final_D << (32*3))
-
         digest = sum(
             buffer_content << (32 * i)
             for i, buffer_content in enumerate([final_A, final_B, final_C, final_D])
         )
 
-        raw = digest.to_bytes(16, byteorder="little").hex()
-        return raw
+        return little_endian_to_hex_string(digest)
+    
+print(MD5().generate_hash("They are deterministic"))

@@ -1,26 +1,48 @@
 from math import floor, sin
 from typing import List
 
-from hashing.utils import left_shift, digest_to_hex_string, modular_add
+from hashing.utils import left_shift, modular_add
 
 
 class MD5:
+    """A cryptographic hashing function used to produce a 128-bit hash.
+    https://en.wikipedia.org/wiki/MD5
+    """
+
     def __init__(self) -> None:
-        self.A = 0x67452301
-        self.B = 0xEFCDAB89
-        self.C = 0x98BADCFE
-        self.D = 0x10325476
-        self.constants = [floor(abs(sin(i) * pow(2, 32))) for i in range(1, 65)]
-        self.shifts = ([7, 12, 17, 22] * 4) + ([5, 9, 14, 20] * 4) + ([4, 11, 16, 23] * 4) + ([6, 10, 15, 21] * 4)
-    
-    
+        self.a: int = 0x67452301
+        self.b: int = 0xEFCDAB89
+        self.c: int = 0x98BADCFE
+        self.d: int = 0x10325476
+        self.constants: List[int] = [
+            floor(abs(sin(i) * pow(2, 32))) for i in range(1, 65)
+        ]
+        self.shifts: List[int] = (
+            ([7, 12, 17, 22] * 4)
+            + ([5, 9, 14, 20] * 4)
+            + ([4, 11, 16, 23] * 4)
+            + ([6, 10, 15, 21] * 4)
+        )
+
     @staticmethod
     def apply_padding(message: bytearray) -> bytearray:
+        """Pre-processing for the input message.
+        Appends a trailing '1'.
+        Pad 0s to the message.
+        Append message length to the message.
+
+        Args:
+            message (bytearray): The input message in bytes.
+
+        Returns:
+            bytearray: The pre-processed message in bytes.
+        """
+        # Store the length of the message in bytes
         message_length = len(message)
 
         # Pad a trailing '1'
         message.append(0x80)
-        
+
         # Pad 0s to assert a block length of 448 bits (56 bytes)
         while len(message) % 64 != 56:
             message.append(0)
@@ -29,85 +51,114 @@ class MD5:
         message += (message_length * 8).to_bytes(8, byteorder="little")
 
         return message
-    
-    
+
     @staticmethod
-    def split_message_block(
-        message_block: bytearray, message_block_length: int = 4
-    ) -> List[bytearray]:
+    def split_message_block_into_words(
+        message_block: bytearray, word_length_in_bytes: int = 4
+    ) -> List[int]:
+        """Split the 64-byte message chunk into 16 4-byte words.
+
+        Args:
+            message_block (bytearray): The 512-bytes message block.
+            word_length_in_bytes (int, optional): The length of each word in the block. Defaults to 4.
+
+        Returns:
+            List[int]: A List of 4-byte words created by splitting the message block.
+        """
         return [
             int.from_bytes(
-                message_block[4 * i : 4 * i + message_block_length], byteorder="little"
+                message_block[4 * i : 4 * i + word_length_in_bytes], byteorder="little"
             )
-            for i in range(len(message_block) // message_block_length)
+            for i in range(len(message_block) // word_length_in_bytes)
         ]
-    
+
     @staticmethod
-    def F(x, y, z):
+    def F(x: int, y: int, z: int) -> int:
+        """F(x, y, z) = (x AND y) OR (NOT x AND z)"""
         return (x & y) | (~x & z)
 
     @staticmethod
-    def G(x, y, z):
+    def G(x: int, y: int, z: int) -> int:
+        """G(x, y, z) = (x AND z) or (y AND NOT z)"""
         return (x & z) | (y & ~z)
 
     @staticmethod
-    def H(x, y, z):
+    def H(x: int, y: int, z: int) -> int:
+        """H(x, y, z) = x XOR y XOR z"""
         return x ^ y ^ z
 
     @staticmethod
-    def I(x, y, z):
+    def I(x: int, y: int, z: int) -> int:
+        """I(x, y, z) = y XOR (x OR NOT z)"""
         return y ^ (x | ~z)
-    
-    
+
+    def register_values_to_hex_string(self) -> str:
+        """Read the values of the 4 registers and convert them to a hexadecimal string.
+
+        Returns:
+            str: The hexadecimal string represented by the 4 registers.
+        """
+        # Create the message digest from the final values of the 4 registers (a, b, c, d)
+        digest = sum(
+            register_value << (32 * i)
+            for i, register_value in enumerate([self.a, self.b, self.c, self.d])
+        )
+        # Convert the digest to a hexadecimal string
+        return digest.to_bytes(16, byteorder="little").hex()
+
     def generate_hash(self, message: str) -> str:
+        """Generates a 128-bit MD5 hash of the input message.
+
+        Args:
+            message (str): The input message/text.
+
+        Returns:
+            str: The 128-bit MD5 hash of the message.
+        """
         message_in_bytes = bytearray(message, "ascii")
-        padded_message = self.apply_padding(message_in_bytes)
-        
-        for block in range(len(padded_message)//64):
-            message_words = self.split_message_block(padded_message[block * 64: block * 64 + 64])
-            curr_A, curr_B, curr_C, curr_D = self.A, self.B, self.C, self.D
+        message_chunk = self.apply_padding(message_in_bytes)
+
+        # Loop through each 64-byte message block
+        for block in range(len(message_chunk) // 64):
+            message_words = self.split_message_block_into_words(
+                message_chunk[block * 64 : block * 64 + 64]
+            )
+            curr_a, curr_b, curr_c, curr_d = self.a, self.b, self.c, self.d
+
+            # 4 rounds of 16 operations
             for i in range(64):
                 # Round 1
                 if 0 <= i < 16:
-                    f = self.F(curr_B, curr_C, curr_D)
+                    f = self.F(curr_b, curr_c, curr_d)
                     g = i
 
                 # Round 2
                 elif 16 <= i < 32:
-                    f = self.G(curr_B, curr_C, curr_D)
+                    f = self.G(curr_b, curr_c, curr_d)
                     g = ((5 * i) + 1) % 16
 
                 # Round 3
                 elif 32 <= i < 48:
-                    f = self.H(curr_B, curr_C, curr_D)
+                    f = self.H(curr_b, curr_c, curr_d)
                     g = ((3 * i) + 5) % 16
 
                 # Round 4
                 elif 48 <= i < 64:
-                    f = self.I(curr_B, curr_C, curr_D)
+                    f = self.I(curr_b, curr_c, curr_d)
                     g = (7 * i) % 16
-                
-                # f = curr_A + f + self.constants[i] + message_words[g]
-                f = modular_add(f, curr_A)
+
+                f = modular_add(f, curr_a)
                 f = modular_add(f, self.constants[i])
-                f = modular_add(f, message_words[g] )
+                f = modular_add(f, message_words[g])
 
-                curr_A = curr_D
-                curr_D = curr_C
-                curr_C = curr_B
-                curr_B += left_shift(f, self.shifts[i])
-            
-            self.A = modular_add(self.A, curr_A)
-            self.B = modular_add(self.B, curr_B)
-            self.C = modular_add(self.C, curr_C)
-            self.D = modular_add(self.D, curr_D)
+                curr_a = curr_d
+                curr_d = curr_c
+                curr_c = curr_b
+                curr_b += left_shift(f, self.shifts[i])
 
-        # Create the message digest from the final values of the 4 registers
-        digest = sum(
-            buffer_content << (32 * i)
-            for i, buffer_content in enumerate([self.A, self.B, self.C, self.D])
-        )
+            self.a = modular_add(self.a, curr_a)
+            self.b = modular_add(self.b, curr_b)
+            self.c = modular_add(self.c, curr_c)
+            self.d = modular_add(self.d, curr_d)
 
-        return digest_to_hex_string(digest)
-    
-print(MD5().generate_hash("12345678901234567890123456789012345678901234567890123456789012345678901234567890"))
+        return self.register_values_to_hex_string()

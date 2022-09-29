@@ -11,7 +11,7 @@ def left_shift(x: int, s: int) -> int:
     Returns:
         int: The left shifted value of the input integer.
     """
-    return (x << s) | (x >> (32 - s))
+    return ((x << s) | (x >> (32 - s))) & 0xFFFFFFFF
 
 
 def modular_add(x: int, y: int) -> int:

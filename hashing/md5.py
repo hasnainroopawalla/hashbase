@@ -1,7 +1,7 @@
 from math import floor, sin
 from typing import List
 
-from hashing.utils import left_shift, modular_add
+from hashing.utils import left_shift, modular_add, pad_message
 
 
 class MD5:
@@ -25,38 +25,10 @@ class MD5:
         )
 
     @staticmethod
-    def apply_padding(message: bytearray) -> bytearray:
-        """Pre-processing for the input message.
-        Appends a trailing '1'.
-        Pad 0s to the message.
-        Append message length to the message.
-
-        Args:
-            message (bytearray): The input message in bytes.
-
-        Returns:
-            bytearray: The pre-processed message in bytes.
-        """
-        # Store the length of the message in bytes
-        message_length = len(message)
-
-        # Pad a trailing '1'
-        message.append(0x80)
-
-        # Pad 0s to assert a block length of 448 bits (56 bytes)
-        while len(message) % 64 != 56:
-            message.append(0)
-
-        # Pad the last 64 bits that indicate the message length in the little endian format
-        message += (message_length * 8).to_bytes(8, byteorder="little")
-
-        return message
-
-    @staticmethod
     def split_message_block_into_words(
         message_block: bytearray, word_length_in_bytes: int = 4
     ) -> List[int]:
-        """Split the 64-byte message chunk into 16 4-byte words.
+        """Split the 64-byte message block into 16 4-byte words.
 
         Args:
             message_block (bytearray): The 512-bytes message block.
@@ -116,7 +88,7 @@ class MD5:
             str: The 128-bit MD5 hash of the message.
         """
         message_in_bytes = bytearray(message, "ascii")
-        message_chunk = self.apply_padding(message_in_bytes)
+        message_chunk = pad_message(message_in_bytes, "little")
 
         # Loop through each 64-byte message block
         for block in range(len(message_chunk) // 64):

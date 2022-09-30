@@ -1,3 +1,6 @@
+from typing import Literal
+
+
 Z = pow(2, 32)
 
 
@@ -27,7 +30,7 @@ def modular_add(x: int, y: int) -> int:
     return (x + y) % Z
 
 
-def pad_message(message: bytearray, message_length_byteorder: str) -> bytearray:
+def pad_message(message: bytearray, message_length_byteorder: Literal['little', 'big']) -> bytearray:
     """Pre-processing for the input message.
     Appends a trailing '1'.
     Pad 0s to the message.

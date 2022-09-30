@@ -39,7 +39,7 @@ class MD2:
                 checksum[j] = l
         return message + checksum
 
-    def generate_hash(self, message: str) -> str:
+    def generate_hash(self, message: int) -> str:
         """Generates a 128-bit MD2 hash of the input message.
 
         Args:

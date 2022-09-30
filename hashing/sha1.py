@@ -4,7 +4,7 @@ from hashing.utils import left_shift, modular_add, pad_message
 
 
 class SHA1:
-    """A cryptographic hashing function used to produce a 160-bit hash.
+    """The SHA-1 algorithm is a cryptographic hashing function used to produce a 160-bit hash.
     https://en.wikipedia.org/wiki/SHA-1
     """
 

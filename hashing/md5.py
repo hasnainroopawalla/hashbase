@@ -5,7 +5,7 @@ from hashing.utils import left_shift, modular_add, pad_message
 
 
 class MD5:
-    """A cryptographic hashing function used to produce a 128-bit hash.
+    """The MD5 algorithm is a cryptographic hashing function used to produce a 128-bit hash.
     https://en.wikipedia.org/wiki/MD5
     """
 

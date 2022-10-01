@@ -4,9 +4,9 @@ from typing import List
 from hashing.utils import left_shift, modular_add, pad_message
 
 
-class MD5:
-    """The MD5 algorithm is a cryptographic hashing function used to produce a 128-bit hash.
-    https://en.wikipedia.org/wiki/MD5
+class MD4:
+    """The MD4 algorithm is a cryptographic hashing function used to produce a 128-bit hash.
+    https://en.wikipedia.org/wiki/MD4
     """
 
     def __init__(self) -> None:
@@ -18,10 +18,9 @@ class MD5:
             floor(abs(sin(i) * pow(2, 32))) for i in range(1, 65)
         ]
         self.shifts: List[int] = (
-            ([7, 12, 17, 22] * 4)
-            + ([5, 9, 14, 20] * 4)
-            + ([4, 11, 16, 23] * 4)
-            + ([6, 10, 15, 21] * 4)
+            ([3, 7 , 11 , 19] * 4)
+            + ([3, 5, 9, 13] * 4)
+            + ([3, 9, 11 ,15] * 4)
         )
 
     @staticmethod
@@ -51,18 +50,14 @@ class MD5:
 
     @staticmethod
     def G(x: int, y: int, z: int) -> int:
-        """G(x, y, z) = (x AND z) OR (y AND NOT z)"""
-        return (x & z) | (y & ~z)
+        """G(x, y, z) = (x AND y) OR (x AND z) OR (y AND z)"""
+        return (x & y) | (x & z) | (y & z)
 
     @staticmethod
     def H(x: int, y: int, z: int) -> int:
         """H(x, y, z) = x XOR y XOR z"""
         return x ^ y ^ z
 
-    @staticmethod
-    def I(x: int, y: int, z: int) -> int:
-        """I(x, y, z) = y XOR (x OR NOT z)"""
-        return y ^ (x | ~z)
 
     def register_values_to_hex_string(self) -> str:
         """Read the values of the 4 registers and convert them to a hexadecimal string.
@@ -79,13 +74,13 @@ class MD5:
         return digest.to_bytes(16, byteorder="little").hex()
 
     def generate_hash(self, message: str) -> str:
-        """Generates a 128-bit MD5 hash of the input message.
+        """Generates a 128-bit MD4 hash of the input message.
 
         Args:
             message (str): The input message/text.
 
         Returns:
-            str: The 128-bit MD5 hash of the message.
+            str: The 128-bit MD4 hash of the message.
         """
         message_in_bytes = bytearray(message, "ascii")
         message_chunk = pad_message(message_in_bytes, "little")
@@ -97,36 +92,30 @@ class MD5:
             )
             curr_a, curr_b, curr_c, curr_d = self.a, self.b, self.c, self.d
 
-            # 4 rounds of 16 operations
-            for i in range(64):
+            # 3 rounds of 16 operations
+            for i in range(48):
                 # Round 1
                 if 0 <= i < 16:
                     f = self.F(curr_b, curr_c, curr_d)
-                    g = i
+                    k = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
 
                 # Round 2
                 elif 16 <= i < 32:
-                    f = self.G(curr_b, curr_c, curr_d)
-                    g = ((5 * i) + 1) % 16
+                    f = self.G(curr_b, curr_c, curr_d) + 0x5A827999
+                    k = (0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15)
 
                 # Round 3
                 elif 32 <= i < 48:
-                    f = self.H(curr_b, curr_c, curr_d)
-                    g = ((3 * i) + 5) % 16
-
-                # Round 4
-                elif 48 <= i < 64:
-                    f = self.I(curr_b, curr_c, curr_d)
-                    g = (7 * i) % 16
+                    f = self.H(curr_b, curr_c, curr_d) + 0x6ED9EBA1
+                    k = (0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15)
 
                 f = modular_add(f, curr_a)
-                f = modular_add(f, self.constants[i])
-                f = modular_add(f, message_words[g])
+                f = modular_add(f, message_words[k[i % 16]])
 
                 curr_a = curr_d
                 curr_d = curr_c
                 curr_c = curr_b
-                curr_b += left_shift(f, self.shifts[i])
+                curr_b = left_shift(f, self.shifts[i])
 
             self.a = modular_add(self.a, curr_a)
             self.b = modular_add(self.b, curr_b)
@@ -134,3 +123,4 @@ class MD5:
             self.d = modular_add(self.d, curr_d)
 
         return self.register_values_to_hex_string()
+

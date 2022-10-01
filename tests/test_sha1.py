@@ -2,7 +2,7 @@ import unittest
 
 from hashing.sha1 import SHA1
 
-# Test suite obtained from the original RFC publication: https://www.di-mgt.com.au/sha_testvectors.html
+# Test suite: https://www.di-mgt.com.au/sha_testvectors.html
 
 
 class TestSHA1Strings(unittest.TestCase):

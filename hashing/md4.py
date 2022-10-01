@@ -18,9 +18,7 @@ class MD4:
             floor(abs(sin(i) * pow(2, 32))) for i in range(1, 65)
         ]
         self.shifts: List[int] = (
-            ([3, 7 , 11 , 19] * 4)
-            + ([3, 5, 9, 13] * 4)
-            + ([3, 9, 11 ,15] * 4)
+            ([3, 7, 11, 19] * 4) + ([3, 5, 9, 13] * 4) + ([3, 9, 11, 15] * 4)
         )
 
     @staticmethod
@@ -57,7 +55,6 @@ class MD4:
     def H(x: int, y: int, z: int) -> int:
         """H(x, y, z) = x XOR y XOR z"""
         return x ^ y ^ z
-
 
     def register_values_to_hex_string(self) -> str:
         """Read the values of the 4 registers and convert them to a hexadecimal string.
@@ -97,20 +94,25 @@ class MD4:
                 # Round 1
                 if 0 <= i < 16:
                     f = self.F(curr_b, curr_c, curr_d)
-                    k = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+                    k = i
 
                 # Round 2
                 elif 16 <= i < 32:
                     f = self.G(curr_b, curr_c, curr_d) + 0x5A827999
-                    k = (0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15)
+                    k = 4 * (i % 4) + (i % 16) // 4
 
                 # Round 3
                 elif 32 <= i < 48:
                     f = self.H(curr_b, curr_c, curr_d) + 0x6ED9EBA1
-                    k = (0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15)
+                    k = (
+                        8 * ((i - 32) % 2)
+                        + ((i - 32) // 2)
+                        - 3 * ((i - 32) // 8)
+                        + 3 * (((i - 32) // 2) % 2)
+                    )
 
                 f = modular_add(f, curr_a)
-                f = modular_add(f, message_words[k[i % 16]])
+                f = modular_add(f, message_words[k])
 
                 curr_a = curr_d
                 curr_d = curr_c
@@ -123,4 +125,3 @@ class MD4:
             self.d = modular_add(self.d, curr_d)
 
         return self.register_values_to_hex_string()
-

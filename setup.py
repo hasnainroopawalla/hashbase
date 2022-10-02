@@ -26,7 +26,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10"
+        "Programming Language :: Python :: 3.10",
     ],
     keywords="python, hashing, hashing-algorithms, hash-functions, cryptography",
     python_requires=">=3.6",

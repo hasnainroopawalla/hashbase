@@ -1,6 +1,6 @@
 import unittest
 
-from hashing.md5 import MD5
+from hashbase.md5 import MD5
 
 # Test suite obtained from the original RFC publication: https://datatracker.ietf.org/doc/html/rfc1321
 

@@ -1,6 +1,6 @@
 import unittest
 
-from hashing.md4 import MD4
+from hashbase.md4 import MD4
 
 # Test suite obtained from the original RFC publication: https://www.rfc-editor.org/rfc/rfc1319
 

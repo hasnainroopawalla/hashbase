@@ -1,6 +1,6 @@
 from typing import List
 
-from hashing.utils import left_shift, modular_add, pad_message
+from hashbase.utils import left_shift, modular_add, pad_message
 
 
 class SHA1:

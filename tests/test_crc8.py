@@ -1,6 +1,6 @@
 import unittest
 
-from hashing.crc8 import CRC8
+from hashbase.crc8 import CRC8
 
 
 class TestCRC8Strings(unittest.TestCase):

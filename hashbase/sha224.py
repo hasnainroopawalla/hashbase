@@ -113,10 +113,10 @@ class SHA224:
         return w
 
     def register_values_to_hex_string(self) -> str:
-        """Read the values of the 8 registers and convert them to a hexadecimal string.
+        """Read the values of only 7 (h0-h6) registers and convert them to a hexadecimal string.
 
         Returns:
-            str: The hexadecimal string represented by the 8 registers.
+            str: The hexadecimal string represented by the 7 registers.
         """
         return "%08x%08x%08x%08x%08x%08x%08x" % (
             self.h0,

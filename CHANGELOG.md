@@ -1,5 +1,12 @@
 # Change Log
 
+## 03-Oct-2022 [1.0.3]
+- Added the following hash function:
+  - SHA-224 (`hashbase.SHA224`)
+
+## 03-Oct-2022 [1.0.2]
+- Minor docstring update
+
 ## 03-Oct-2022 [1.0.1]
 - Added the following hash function:
   - SHA-256 (`hashbase.SHA256`)

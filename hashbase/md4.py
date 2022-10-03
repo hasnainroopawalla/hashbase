@@ -1,7 +1,6 @@
-from math import floor, sin
 from typing import List
 
-from hashbase.utils import left_shift, modular_add, pad_message
+from hashbase.utils import rotate_left, modular_add, apply_message_padding
 
 
 class MD4:
@@ -14,10 +13,7 @@ class MD4:
         self.b: int = 0xEFCDAB89
         self.c: int = 0x98BADCFE
         self.d: int = 0x10325476
-        self.constants: List[int] = [
-            floor(abs(sin(i) * pow(2, 32))) for i in range(1, 65)
-        ]
-        self.shifts: List[int] = (
+        self.SHIFTS: List[int] = (
             ([3, 7, 11, 19] * 4) + ([3, 5, 9, 13] * 4) + ([3, 9, 11, 15] * 4)
         )
 
@@ -80,7 +76,7 @@ class MD4:
             str: The 128-bit MD4 hash of the message.
         """
         message_in_bytes = bytearray(message, "ascii")
-        message_chunk = pad_message(message_in_bytes, "little")
+        message_chunk = apply_message_padding(message_in_bytes, "little")
 
         # Loop through each 64-byte message block
         for block in range(len(message_chunk) // 64):
@@ -111,17 +107,16 @@ class MD4:
                         + 3 * (((i - 32) // 2) % 2)
                     )
 
-                f = modular_add(f, curr_a)
-                f = modular_add(f, message_words[k])
+                f = modular_add([f, curr_a, message_words[k]])
 
                 curr_a = curr_d
                 curr_d = curr_c
                 curr_c = curr_b
-                curr_b = left_shift(f, self.shifts[i])
+                curr_b = rotate_left(f, self.SHIFTS[i])
 
-            self.a = modular_add(self.a, curr_a)
-            self.b = modular_add(self.b, curr_b)
-            self.c = modular_add(self.c, curr_c)
-            self.d = modular_add(self.d, curr_d)
+            self.a = modular_add([self.a, curr_a])
+            self.b = modular_add([self.b, curr_b])
+            self.c = modular_add([self.c, curr_c])
+            self.d = modular_add([self.d, curr_d])
 
         return self.register_values_to_hex_string()

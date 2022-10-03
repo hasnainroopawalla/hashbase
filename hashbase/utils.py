@@ -68,7 +68,7 @@ def modular_add(nums: List[int]) -> int:
     return sum(nums) % Z
 
 
-def pad_message(
+def apply_message_padding(
     message: bytearray, message_length_byteorder: Literal["little", "big"]
 ) -> bytearray:
     """Pre-processing for the input message.

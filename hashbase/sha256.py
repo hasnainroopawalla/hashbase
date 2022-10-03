@@ -1,6 +1,6 @@
 from typing import List
 
-from hashbase.utils import modular_add, pad_message, rotate_right, shift_right
+from hashbase.utils import modular_add, apply_message_padding, rotate_right, shift_right
 
 
 class SHA256:
@@ -139,7 +139,7 @@ class SHA256:
             str: The 256-bit SHA-256 hash of the message.
         """
         message_in_bytes = bytearray(message, "ascii")
-        message_chunk = pad_message(message_in_bytes, "big")
+        message_chunk = apply_message_padding(message_in_bytes, "big")
 
         # Loop through each 64-byte message block
         for block in range(len(message_chunk) // 64):

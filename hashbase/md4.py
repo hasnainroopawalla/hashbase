@@ -1,6 +1,6 @@
 from typing import List
 
-from hashbase.utils import rotate_left, modular_add, pad_message
+from hashbase.utils import rotate_left, modular_add, apply_message_padding
 
 
 class MD4:
@@ -76,7 +76,7 @@ class MD4:
             str: The 128-bit MD4 hash of the message.
         """
         message_in_bytes = bytearray(message, "ascii")
-        message_chunk = pad_message(message_in_bytes, "little")
+        message_chunk = apply_message_padding(message_in_bytes, "little")
 
         # Loop through each 64-byte message block
         for block in range(len(message_chunk) // 64):

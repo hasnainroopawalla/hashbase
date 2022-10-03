@@ -266,7 +266,7 @@ class MD2:
         ]
 
     @staticmethod
-    def pad_message(message: str) -> List[int]:
+    def apply_message_padding(message: str) -> List[int]:
         """Converts the input message to a List of integer values and applies padding.
 
         Args:
@@ -305,7 +305,7 @@ class MD2:
         Returns:
             str: The 128-bit MD2 hash of the message.
         """
-        padded_message = self.pad_message(message)
+        padded_message = self.apply_message_padding(message)
         padded_message_checksum = self.append_checksum(padded_message)
         md_buffer = [0] * 48
 

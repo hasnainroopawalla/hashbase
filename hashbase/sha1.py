@@ -78,10 +78,7 @@ class SHA1:
                     f = b ^ c ^ d
                     k = 0xCA62C1D6
 
-                temp = modular_add(rotate_left(a, 5), f)
-                temp = modular_add(temp, e)
-                temp = modular_add(temp, k)
-                temp = modular_add(temp, w[i])
+                temp = modular_add([rotate_left(a, 5), f, e, k, w[i]])
 
                 e = d
                 d = c
@@ -89,10 +86,10 @@ class SHA1:
                 b = a
                 a = temp
 
-            self.h0 = modular_add(self.h0, a)
-            self.h1 = modular_add(self.h1, b)
-            self.h2 = modular_add(self.h2, c)
-            self.h3 = modular_add(self.h3, d)
-            self.h4 = modular_add(self.h4, e)
+            self.h0 = modular_add([self.h0, a])
+            self.h1 = modular_add([self.h1, b])
+            self.h2 = modular_add([self.h2, c])
+            self.h3 = modular_add([self.h3, d])
+            self.h4 = modular_add([self.h4, e])
 
         return self.register_values_to_hex_string()

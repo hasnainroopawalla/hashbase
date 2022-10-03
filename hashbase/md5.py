@@ -14,10 +14,8 @@ class MD5:
         self.b: int = 0xEFCDAB89
         self.c: int = 0x98BADCFE
         self.d: int = 0x10325476
-        self.constants: List[int] = [
-            floor(abs(sin(i) * pow(2, 32))) for i in range(1, 65)
-        ]
-        self.shifts: List[int] = (
+        self.K: List[int] = [floor(abs(sin(i) * pow(2, 32))) for i in range(1, 65)]
+        self.SHIFTS: List[int] = (
             ([7, 12, 17, 22] * 4)
             + ([5, 9, 14, 20] * 4)
             + ([4, 11, 16, 23] * 4)
@@ -119,18 +117,16 @@ class MD5:
                     f = self.I(curr_b, curr_c, curr_d)
                     g = (7 * i) % 16
 
-                f = modular_add(f, curr_a)
-                f = modular_add(f, self.constants[i])
-                f = modular_add(f, message_words[g])
+                f = modular_add([f, curr_a, self.K[i], message_words[g]])
 
                 curr_a = curr_d
                 curr_d = curr_c
                 curr_c = curr_b
-                curr_b += rotate_left(f, self.shifts[i])
+                curr_b += rotate_left(f, self.SHIFTS[i])
 
-            self.a = modular_add(self.a, curr_a)
-            self.b = modular_add(self.b, curr_b)
-            self.c = modular_add(self.c, curr_c)
-            self.d = modular_add(self.d, curr_d)
+            self.a = modular_add([self.a, curr_a])
+            self.b = modular_add([self.b, curr_b])
+            self.c = modular_add([self.c, curr_c])
+            self.d = modular_add([self.d, curr_d])
 
         return self.register_values_to_hex_string()

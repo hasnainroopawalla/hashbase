@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import List, Literal
 
 
 Z = pow(2, 32)
@@ -55,17 +55,17 @@ def shift_right(x: int, s: int) -> int:
     """
     return (x >> s) & 0xFFFFFFFF
 
-def modular_add(x: int, y: int) -> int:
-    """Performs modular addition of x and y modulo 2^32.
+
+def modular_add(nums: List[int]) -> int:
+    """Performs modular addition of all elements in nums, modulo 2^32.
 
     Args:
-        x (int): The first integer.
-        y (int): The second integer.
+        nums (List[int]): A List of all the input integers.
 
     Returns:
-        int: The value obtained after modulo addition of x and y.
+        int: The value obtained after modular addition of all elements in nums.
     """
-    return (x + y) % Z
+    return sum(nums) % Z
 
 
 def pad_message(

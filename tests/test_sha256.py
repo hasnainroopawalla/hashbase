@@ -6,10 +6,12 @@ from hashbase.sha256 import SHA256
 class TestSHA1Strings(unittest.TestCase):
     def test_sha1_string_input(self):
         self.assertEqual(
-            SHA256().generate_hash(""), "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            SHA256().generate_hash(""),
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         )
         self.assertEqual(
-            SHA256().generate_hash("abc"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+            SHA256().generate_hash("abc"),
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
         )
         self.assertEqual(
             SHA256().generate_hash(

@@ -1,7 +1,7 @@
 from math import floor, sin
 from typing import List
 
-from hashbase.utils import left_shift, modular_add, pad_message
+from hashbase.utils import rotate_left, modular_add, pad_message
 
 
 class MD4:
@@ -117,7 +117,7 @@ class MD4:
                 curr_a = curr_d
                 curr_d = curr_c
                 curr_c = curr_b
-                curr_b = left_shift(f, self.shifts[i])
+                curr_b = rotate_left(f, self.shifts[i])
 
             self.a = modular_add(self.a, curr_a)
             self.b = modular_add(self.b, curr_b)

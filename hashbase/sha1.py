@@ -1,6 +1,6 @@
 from typing import List
 
-from hashbase.utils import left_shift, modular_add, pad_message
+from hashbase.utils import rotate_left, modular_add, pad_message
 
 
 class SHA1:
@@ -30,7 +30,7 @@ class SHA1:
             if 0 <= i < 16:
                 w[i] = int.from_bytes(message_block[4 * i : 4 * i + 4], byteorder="big")
             else:
-                w[i] = left_shift((w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16]), 1)
+                w[i] = rotate_left((w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16]), 1)
         return w
 
     def register_values_to_hex_string(self) -> str:
@@ -78,14 +78,14 @@ class SHA1:
                     f = b ^ c ^ d
                     k = 0xCA62C1D6
 
-                temp = modular_add(left_shift(a, 5), f)
+                temp = modular_add(rotate_left(a, 5), f)
                 temp = modular_add(temp, e)
                 temp = modular_add(temp, k)
                 temp = modular_add(temp, w[i])
 
                 e = d
                 d = c
-                c = left_shift(b, 30)
+                c = rotate_left(b, 30)
                 b = a
                 a = temp
 

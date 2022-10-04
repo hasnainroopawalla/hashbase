@@ -79,7 +79,10 @@ def modular_add(nums: List[int], size: int = 32) -> int:
 
 
 def apply_message_padding(
-    message: bytearray, message_length_byteorder: Literal["little", "big"], message_length_padding_bits: int = 64, message_chunk_size_bits: int = 512
+    message: bytearray,
+    message_length_byteorder: Literal["little", "big"],
+    message_length_padding_bits: int = 64,
+    message_chunk_size_bits: int = 512,
 ) -> bytearray:
     """Pre-processing for the input message.
     Appends a trailing '1'.
@@ -100,12 +103,16 @@ def apply_message_padding(
 
     # Pad a trailing '1'
     message.append(0x80)
-    
+
     # Pad 0s to assert a block length of (message_chunk_size_bits-message_length_padding_bits) bits
-    while (len(message) * 8 + message_length_padding_bits) % message_chunk_size_bits != 0:
+    while (
+        len(message) * 8 + message_length_padding_bits
+    ) % message_chunk_size_bits != 0:
         message.append(0)
 
     # Pad the last message_length_padding_bits bits that indicate the message length in the specified endian format
-    message += (original_message_length_in_bits).to_bytes(message_length_padding_bits//8, byteorder=message_length_byteorder)
+    message += (original_message_length_in_bits).to_bytes(
+        message_length_padding_bits // 8, byteorder=message_length_byteorder
+    )
 
     return message

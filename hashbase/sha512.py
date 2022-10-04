@@ -49,19 +49,19 @@ class SHA512:
         w = list(range(80))
         for i in range(80):
             if 0 <= i < 16:
-                w[i] = int.from_bytes(message_block[4 * i : 4 * i + 4], byteorder="big")
+                w[i] = int.from_bytes(message_block[8 * i : 8 * i + 8], byteorder="big")
             else:
                 s0 = (
-                    rotate_right(w[i - 15], 1)
-                    ^ rotate_right(w[i - 15], 8)
-                    ^ shift_right(w[i - 15], 7)
+                    rotate_right(w[i - 15], s=1, size=64)
+                    ^ rotate_right(w[i - 15], s=8, size=64)
+                    ^ shift_right(w[i - 15], s=7, size=64)
                 )
                 s1 = (
-                    rotate_right(w[i - 2], 19)
-                    ^ rotate_right(w[i - 2], 61)
-                    ^ shift_right(w[i - 2], 6)
+                    rotate_right(w[i - 2], s=19, size=64)
+                    ^ rotate_right(w[i - 2], s=61, size=64)
+                    ^ shift_right(w[i - 2], s=6, size=64)
                 )
-                w[i] = modular_add([w[i - 16], s0, w[i - 7], s1])
+                w[i] = modular_add([w[i - 16], s0, w[i - 7], s1], size=64)
         return w
 
     def register_values_to_hex_string(self) -> str:
@@ -92,12 +92,12 @@ class SHA512:
         """
         message_in_bytes = bytearray(message, "ascii")
         message_chunk = apply_message_padding(message_in_bytes, message_length_byteorder="big", message_length_padding_bits=128, message_chunk_size_bits=1024)
-        print(message_chunk, len(message_chunk))
         # Loop through each 64-byte message block
-        for block in range(len(message_chunk) // 64):
+        for block in range(len(message_chunk) // 128):
             w = self.break_message_block_into_words(
-                message_chunk[block * 64 : block * 64 + 64]
+                message_chunk[block * 128 : block * 128 + 128]
             )
+            # print(w)
             a, b, c, d, e, f, g, h = (
                 self.h0,
                 self.h1,
@@ -109,34 +109,37 @@ class SHA512:
                 self.h7,
             )
 
-            for i in range(64):
-                s1 = rotate_right(e, 14) ^ rotate_right(e, 18) ^ rotate_right(e, 41)
+            for i in range(80):
+                s1 = rotate_right(e, s=14, size=64) ^ rotate_right(e, s=18, size=64) ^ rotate_right(e, s=41, size=64)
                 ch = (e & f) ^ (~e & g)
-                temp1 = modular_add([h, s1, ch, self.K[i], w[i]])
+                temp1 = modular_add([h, s1, ch, self.K[i], w[i]], size=64)
 
-                s0 = rotate_right(a, 28) ^ rotate_right(a, 34) ^ rotate_right(a, 39)
+                s0 = rotate_right(a, s=28, size=64) ^ rotate_right(a, s=34, size=64) ^ rotate_right(a, s=39, size=64)
                 maj = (a & b) ^ (a & c) ^ (b & c)
-                temp2 = modular_add([s0, maj])
+                temp2 = modular_add([s0, maj], size=64)
 
                 h = g
                 g = f
                 f = e
-                e = modular_add([d, temp1])
+                e = modular_add([d, temp1], size=64)
                 d = c
                 c = b
                 b = a
-                a = modular_add([temp1, temp2])
-
-            self.h0 = modular_add([self.h0, a])
-            self.h1 = modular_add([self.h1, b])
-            self.h2 = modular_add([self.h2, c])
-            self.h3 = modular_add([self.h3, d])
-            self.h4 = modular_add([self.h4, e])
-            self.h5 = modular_add([self.h5, f])
-            self.h6 = modular_add([self.h6, g])
-            self.h7 = modular_add([self.h7, h])
+                a = modular_add([temp1, temp2], size=64)
+        
+            self.h0 = modular_add([self.h0, a], size=64)
+            self.h1 = modular_add([self.h1, b], size=64)
+            self.h2 = modular_add([self.h2, c], size=64)
+            self.h3 = modular_add([self.h3, d], size=64)
+            self.h4 = modular_add([self.h4, e], size=64)
+            self.h5 = modular_add([self.h5, f], size=64)
+            self.h6 = modular_add([self.h6, g], size=64)
+            self.h7 = modular_add([self.h7, h], size=64)
 
         return self.register_values_to_hex_string()
 
 
-print(SHA512().generate_hash('abc'))
+print(SHA512().generate_hash(''))
+
+# cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e
+# cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e

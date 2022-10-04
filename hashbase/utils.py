@@ -4,68 +4,78 @@ from typing import List, Literal
 Z = pow(2, 32)
 
 
-def rotate_left(x: int, s: int) -> int:
+def rotate_left(x: int, s: int, size: int = 32) -> int:
     """Circular rotation of x left by s bit positions.
 
     Args:
         x (int): The input integer.
         s (int): The number of shifts (in bits).
+        size (int): The size of the input/output in bits.
 
     Returns:
         int: The left rotated value of the input integer.
     """
-    return ((x << s) | (x >> (32 - s))) & 0xFFFFFFFF
+    z = 0xFFFFFFFF if size == 32 else 0xFFFFFFFFFFFFFFFF
+    return ((x << s) | (x >> (size - s))) & z
 
 
-def shift_left(x: int, s: int) -> int:
+def shift_left(x: int, s: int, size: int = 32) -> int:
     """Shift x left by s bit positions.
 
     Args:
         x (int): The input integer.
         s (int): The number of shifts (in bits).
+        size (int): The size of the input/output in bits.
 
     Returns:
         int: The left shifted value of the input integer.
     """
-    return (x << s) & 0xFFFFFFFF
+    z = 0xFFFFFFFF if size == 32 else 0xFFFFFFFFFFFFFFFF
+    return (x << s) & z
 
 
-def rotate_right(x: int, s: int):
+def rotate_right(x: int, s: int, size: int = 32):
     """Circular rotation of x right by s bit positions.
 
     Args:
         x (int): The input integer.
         s (int): The number of shifts (in bits).
+        size (int): The size of the input/output in bits.
 
     Returns:
         int: The right rotated value of the input integer.
     """
-    return ((x >> s) | (x << (32 - s))) & 0xFFFFFFFF
+    z = 0xFFFFFFFF if size == 32 else 0xFFFFFFFFFFFFFFFF
+    return ((x >> s) | (x << (size - s))) & z
 
 
-def shift_right(x: int, s: int) -> int:
+def shift_right(x: int, s: int, size: int = 32) -> int:
     """Shift x right by s bit positions.
 
     Args:
         x (int): The input integer.
         s (int): The number of shifts (in bits).
+        size (int): The size of the input/output in bits.
 
     Returns:
         int: The right shifted value of the input integer.
     """
-    return (x >> s) & 0xFFFFFFFF
+    z = 0xFFFFFFFF if size == 32 else 0xFFFFFFFFFFFFFFFF
+    return (x >> s) & z
 
 
-def modular_add(nums: List[int]) -> int:
+def modular_add(nums: List[int], size: int = 32) -> int:
     """Performs modular addition of all elements in nums, modulo 2^32.
 
     Args:
         nums (List[int]): A List of all the input integers.
+        size (int): The size of the input/output in bits.
 
     Returns:
         int: The value obtained after modular addition of all elements in nums.
     """
-    return sum(nums) % Z
+    z = 0xFFFFFFFF if size == 32 else 0xFFFFFFFFFFFFFFFF
+    return sum(nums) & z
 
 
 def apply_message_padding(

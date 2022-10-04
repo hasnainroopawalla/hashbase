@@ -1,9 +1,6 @@
 from typing import List, Literal
 
 
-Z = pow(2, 32)
-
-
 def rotate_left(x: int, s: int, size: int = 32) -> int:
     """Circular rotation of x left by s bit positions.
 

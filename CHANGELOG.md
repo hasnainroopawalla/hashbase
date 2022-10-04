@@ -1,5 +1,11 @@
 # Change Log
 
+## 04-Oct-2022 [1.0.4]
+- Added the following hash functions:
+  - SHA-384 (`hashbase.SHA384`)
+  - SHA-512 (`hashbase.SHA512`)
+- Modified the `modular_add`, `rotate_left`, `rotate_right`, `shift_left` and `shift_right` utility functions to handle 32-bit and 64-bit numbers
+
 ## 03-Oct-2022 [1.0.3]
 - Added the following hash function:
   - SHA-224 (`hashbase.SHA224`)

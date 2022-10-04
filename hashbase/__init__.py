@@ -4,5 +4,7 @@ from hashbase.md5 import MD5
 from hashbase.sha1 import SHA1
 from hashbase.sha224 import SHA224
 from hashbase.sha256 import SHA256
+from hashbase.sha384 import SHA384
+from hashbase.sha512 import SHA512
 from hashbase.crc8 import CRC8
 from hashbase.crc16 import CRC16

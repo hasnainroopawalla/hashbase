@@ -184,6 +184,3 @@ class SHA224:
             self.h7 = modular_add([self.h7, h])
 
         return self.register_values_to_hex_string()
-
-
-print(SHA224().generate_hash("abc"))

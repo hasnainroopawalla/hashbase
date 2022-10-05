@@ -6,5 +6,7 @@ from hashbase.sha224 import SHA224
 from hashbase.sha256 import SHA256
 from hashbase.sha384 import SHA384
 from hashbase.sha512 import SHA512
+from hashbase.sha512_224 import SHA512_224
+from hashbase.sha512_256 import SHA512_256
 from hashbase.crc8 import CRC8
 from hashbase.crc16 import CRC16

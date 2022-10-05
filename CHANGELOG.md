@@ -1,5 +1,10 @@
 # Change Log
 
+## 05-Oct-2022 [1.0.5]
+- Added the following hash functions:
+  - SHA-512/224 (`hashbase.SHA512_224`)
+  - SHA-512/256 (`hashbase.SHA512_256`)
+
 ## 04-Oct-2022 [1.0.4]
 - Added the following hash functions:
   - SHA-384 (`hashbase.SHA384`)

@@ -1,6 +1,6 @@
 import unittest
 
-from hashbase.sha512 import SHA512
+from hashbase import SHA512
 
 
 class TestSHA1Strings(unittest.TestCase):

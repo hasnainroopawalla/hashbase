@@ -1,5 +1,9 @@
 # Change Log
 
+## 10-Oct-2022 [1.1.0]
+- Updated the README file of the repository
+- Fixed the test file name of SHA-384
+
 ## 10-Oct-2022 [1.0.6]
 - Merged the implementation of SHA-512/224, SHA-512/256 and SHA-384 with SHA-512
 - Optimized the imports

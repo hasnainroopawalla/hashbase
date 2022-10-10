@@ -1,5 +1,9 @@
 # Change Log
 
+## 10-Oct-2022 [1.0.6]
+- Merged the implementation of SHA-512/224, SHA-512/256 and SHA-384 with SHA-512
+- Optimized the imports
+
 ## 05-Oct-2022 [1.0.5]
 - Added the following hash functions:
   - SHA-512/224 (`hashbase.SHA512_224`)

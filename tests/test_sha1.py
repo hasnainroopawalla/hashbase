@@ -1,6 +1,6 @@
 import unittest
 
-from hashbase.sha1 import SHA1
+from hashbase import SHA1
 
 # Test suite: https://www.di-mgt.com.au/sha_testvectors.html
 

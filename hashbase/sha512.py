@@ -8,7 +8,7 @@ class SHA512:
     https://en.wikipedia.org/wiki/SHA-2
     """
 
-    def __init__(self) -> None:
+    def __init__(self, output_bits=512) -> None:
         self.h0: int = 0x6A09E667F3BCC908
         self.h1: int = 0xBB67AE8584CAA73B
         self.h2: int = 0x3C6EF372FE94F82B
@@ -99,6 +99,7 @@ class SHA512:
             0x5FCB6FAB3AD6FAEC,
             0x6C44198C4A475817,
         ]
+        self.output_bits = output_bits
 
     @staticmethod
     def break_message_block_into_words(message_block: bytearray) -> List[int]:
@@ -134,7 +135,7 @@ class SHA512:
         Returns:
             str: The hexadecimal string represented by the 8 registers.
         """
-        return "%016x%016x%016x%016x%016x%016x%016x%016x" % (
+        digest = "%016x%016x%016x%016x%016x%016x%016x%016x" % (
             self.h0,
             self.h1,
             self.h2,
@@ -144,6 +145,7 @@ class SHA512:
             self.h6,
             self.h7,
         )
+        return digest[: self.output_bits // 4]
 
     def generate_hash(self, message: str) -> str:
         """Generates a 512-bit SHA-512 hash of the input message.
@@ -167,7 +169,6 @@ class SHA512:
             w = self.break_message_block_into_words(
                 message_chunk[block * 128 : block * 128 + 128]
             )
-            # print(w)
             a, b, c, d, e, f, g, h = (
                 self.h0,
                 self.h1,

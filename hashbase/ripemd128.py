@@ -52,15 +52,16 @@ class RIPEMD128:
         ]
 
     @staticmethod
-    def F(j, X, Y, Z):
-        if 0 <= j & j <= 15:
-            return (X ^ Y ^ Z) & 0xFFFFFFFF
-        if 16 <= j & j <= 31:
-            return ((X & Y) | (Z & ~X)) & 0xFFFFFFFF
-        if 32 <= j & j <= 47:
-            return ((~Y | X) ^ Z) & 0xFFFFFFFF
-        if 48 <= j & j <= 63:
-            return ((X & Z) | (Y & ~Z)) & 0xFFFFFFFF
+    def F(j: int, x: int, y: int, z: int) -> int:
+        if 0 <= j & j < 16:
+            f = x ^ y ^ z
+        if 16 <= j & j < 32:
+            f = (x & y) | (z & ~x)
+        if 32 <= j & j < 48:
+            f = (~y | x) ^ z
+        if 48 <= j & j < 64:
+            f = (x & z) | (y & ~z)
+        return f
 
     def register_values_to_hex_string(self) -> str:
         """Read the values of the 4 registers and convert them to a hexadecimal string.

@@ -2,11 +2,9 @@ import unittest
 
 from hashbase import MD4
 
-# Test suite obtained from the original RFC publication: https://www.rfc-editor.org/rfc/rfc1319
 
-
-class TestMD2Strings(unittest.TestCase):
-    def test_md2_string_input(self):
+class TestMD4Strings(unittest.TestCase):
+    def test_md4_string_input(self):
         self.assertEqual(MD4().generate_hash(""), "31d6cfe0d16ae931b73c59d7e0c089c0")
         self.assertEqual(MD4().generate_hash("a"), "bde52cb31de33e46245e05fbdbd6fb24")
         self.assertEqual(MD4().generate_hash("abc"), "a448017aaf21d8525fc10ae87aa6729d")

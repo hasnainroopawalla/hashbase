@@ -8,5 +8,6 @@ from hashbase.sha512 import *
 from hashbase.sha512_224 import *
 from hashbase.sha512_256 import *
 from hashbase.sha384 import *
+from hashbase.ripemd128 import *
 from hashbase.crc8 import *
 from hashbase.crc16 import *

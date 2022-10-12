@@ -1,5 +1,10 @@
 # Change Log
 
+## 12-Oct-2022 [1.1.1]
+Added the following hash function:
+  - RIPEMD-128 (`hashbase.RIPEMD128`)
+- Fixed the test class names
+
 ## 10-Oct-2022 [1.1.0]
 - Updated the README file of the repository
 - Fixed the test file name of SHA-384

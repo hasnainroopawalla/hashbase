@@ -3,8 +3,8 @@ import unittest
 from hashbase import SHA256
 
 
-class TestSHA1Strings(unittest.TestCase):
-    def test_sha1_string_input(self):
+class TestSHA256Strings(unittest.TestCase):
+    def test_sha256_string_input(self):
         self.assertEqual(
             SHA256().generate_hash(""),
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",

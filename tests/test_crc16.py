@@ -3,8 +3,8 @@ import unittest
 from hashbase import CRC16
 
 
-class TestCRC8Strings(unittest.TestCase):
-    def test_crc8_string_input(self):
+class TestCRC16Strings(unittest.TestCase):
+    def test_crc16_string_input(self):
         self.assertEqual(
             CRC16(poly=0xC867, init_value=0xFFFF).generate_hash(""), hex(0xFFFF)
         )

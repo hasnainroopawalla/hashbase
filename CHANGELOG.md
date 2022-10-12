@@ -1,5 +1,8 @@
 # Change Log
 
+## 12-Oct-2022 [1.1.2]
+- Moved all test cases to a JSON file except `CRC-8` and `CRC-16`
+
 ## 12-Oct-2022 [1.1.1]
 Added the following hash function:
   - RIPEMD-128 (`hashbase.RIPEMD128`)

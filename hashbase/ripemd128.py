@@ -1,12 +1,11 @@
-from math import floor, sin, sqrt
 from typing import List
 
 from hashbase.utils import rotate_left, modular_add, apply_message_padding
 
 
 class RIPEMD128:
-    """The MD5 algorithm is a cryptographic hashing function used to produce a 128-bit hash.
-    https://en.wikipedia.org/wiki/MD5
+    """The RIPEMD-128 algorithm is a cryptographic hashing function used to produce a 128-bit hash.
+    https://homes.esat.kuleuven.be/~bosselae/ripemd/rmd128.txt
     """
 
     def __init__(self) -> None:
@@ -32,7 +31,6 @@ class RIPEMD128:
         self.SHIFTS = [11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8, 7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12, 11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5, 11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12]  # type: ignore
         self.SHIFTS_C = [8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6, 9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11, 9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5, 15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8]  # type: ignore
 
-       
     @staticmethod
     def split_message_block_into_words(
         message_block: bytearray, word_length_in_bytes: int = 4
@@ -55,15 +53,14 @@ class RIPEMD128:
 
     @staticmethod
     def F(j, X, Y, Z):
-        if (0<=j & j<=15):
-            return (X^Y^Z) & 0xFFFFFFFF
-        if (16<=j & j<=31):
-            return ((X&Y) | (Z&~X)) & 0xFFFFFFFF
-        if (32<=j & j<=47):
-            return ((~Y|X) ^ Z) & 0xFFFFFFFF
-        if (48<=j & j<=63):
-            return ((X&Z) | (Y&~Z)) & 0xFFFFFFFF
-        
+        if 0 <= j & j <= 15:
+            return (X ^ Y ^ Z) & 0xFFFFFFFF
+        if 16 <= j & j <= 31:
+            return ((X & Y) | (Z & ~X)) & 0xFFFFFFFF
+        if 32 <= j & j <= 47:
+            return ((~Y | X) ^ Z) & 0xFFFFFFFF
+        if 48 <= j & j <= 63:
+            return ((X & Z) | (Y & ~Z)) & 0xFFFFFFFF
 
     def register_values_to_hex_string(self) -> str:
         """Read the values of the 4 registers and convert them to a hexadecimal string.
@@ -74,19 +71,19 @@ class RIPEMD128:
         # Create the message digest from the final values of the 4 registers (a, b, c, d)
         digest = sum(
             register_value << (32 * i)
-            for i, register_value in enumerate([self.a, self.b, self.c, self.d])
+            for i, register_value in enumerate([self.h0, self.h1, self.h2, self.h3])
         )
         # Convert the digest to a hexadecimal string
         return digest.to_bytes(16, byteorder="little").hex()
 
     def generate_hash(self, message: str) -> str:
-        """Generates a 128-bit MD5 hash of the input message.
+        """Generates a 128-bit RIPEMD-128 hash of the input message.
 
         Args:
             message (str): The input message/text.
 
         Returns:
-            str: The 128-bit MD5 hash of the message.
+            str: The 128-bit RIPEMD-128 hash of the message.
         """
         message_in_bytes = bytearray(message, "ascii")
         message_chunk = apply_message_padding(message_in_bytes, "little")
@@ -98,38 +95,34 @@ class RIPEMD128:
             )
             curr_a, curr_b, curr_c, curr_d = self.h0, self.h1, self.h2, self.h3
             curr_a_c, curr_b_c, curr_c_c, curr_d_c = self.h0, self.h1, self.h2, self.h3
-            
+
             for j in range(64):
-                print(message_words[self.R[j]], message_words[self.R_C[j]])
-                w = curr_a + self.F(j, curr_b, curr_c, curr_d) + message_words[self.R[j]] + self.K[j]
+                w = modular_add(
+                    [
+                        curr_a,
+                        self.F(j, curr_b, curr_c, curr_d),
+                        message_words[self.R[j]],
+                        self.K[j],
+                    ]
+                )
                 t = rotate_left(w, self.SHIFTS[j])
-                curr_a, curr_b, curr_c, curr_d = curr_d, curr_c, curr_b, t
-                
-                w = curr_a_c + self.F(63-j, curr_b_c, curr_c_c, curr_d_c) + message_words[self.R_C[j]] + self.K_C[j]
+                curr_a, curr_d, curr_c, curr_b = curr_d, curr_c, curr_b, t
+
+                w = modular_add(
+                    [
+                        curr_a_c,
+                        self.F(63 - j, curr_b_c, curr_c_c, curr_d_c),
+                        message_words[self.R_C[j]],
+                        self.K_C[j],
+                    ]
+                )
                 t = rotate_left(w, self.SHIFTS_C[j])
-                curr_a_c, curr_b_c, curr_c_c, curr_d_c = curr_d_c, curr_c_c, curr_b_c, t
-                
+                curr_a_c, curr_d_c, curr_c_c, curr_b_c = curr_d_c, curr_c_c, curr_b_c, t
 
             t = modular_add([self.h1, curr_c, curr_d_c])
             self.h1 = modular_add([self.h2, curr_d, curr_a_c])
             self.h2 = modular_add([self.h3, curr_a, curr_b_c])
             self.h3 = modular_add([self.h0, curr_b, curr_c_c])
             self.h0 = t
-            #     f = modular_add([f, curr_a, self.K[i], message_words[g]])
 
-            #     curr_a = curr_d
-            #     curr_d = curr_c
-            #     curr_c = curr_b
-            #     curr_b += rotate_left(f, self.SHIFTS[i])
-
-            # self.a = modular_add([self.a, curr_a])
-            # self.b = modular_add([self.b, curr_b])
-            # self.c = modular_add([self.c, curr_c])
-            # self.d = modular_add([self.d, curr_d])
-        print(hex(self.h0), hex(self.h1), hex(self.h2), hex(self.h3))
-        # return self.register_values_to_hex_string()
-
-
-RIPEMD128().generate_hash(
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-)
+        return self.register_values_to_hex_string()

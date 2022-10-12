@@ -3,14 +3,15 @@ from hashbase import (
     MD4,
     MD5,
     SHA1,
-    CRC8,
-    CRC16,
-    SHA256,
     SHA224,
+    SHA256,
     SHA384,
     SHA512,
     SHA512_224,
     SHA512_256,
+    RIPEMD128,
+    CRC8,
+    CRC16,
 )
 
 
@@ -26,5 +27,6 @@ print(f"SHA-384: {SHA384().generate_hash(message)}")
 print(f"SHA-512: {SHA512().generate_hash(message)}")
 print(f"SHA-512/224: {SHA512_224().generate_hash(message)}")
 print(f"SHA-512/256: {SHA512_256().generate_hash(message)}")
+print(f"RIPEMD-128: {RIPEMD128().generate_hash(message)}")
 print(f"CRC-8: {CRC8().generate_hash(message)}")
 print(f"CRC-16: {CRC16().generate_hash(message)}")

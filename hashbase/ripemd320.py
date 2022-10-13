@@ -74,10 +74,10 @@ class RIPEMD320:
         return f
 
     def register_values_to_hex_string(self) -> str:
-        """Read the values of the 5 registers and convert them to a hexadecimal string.
+        """Read the values of the 10 registers and convert them to a hexadecimal string.
 
         Returns:
-            str: The hexadecimal string represented by the 5 registers.
+            str: The hexadecimal string represented by the 10 registers.
         """
         digest = sum(
             register_value << (32 * i)
@@ -110,7 +110,6 @@ class RIPEMD320:
         message_in_bytes = bytearray(message, "ascii")
         message_chunk = apply_message_padding(message_in_bytes, "little")
 
-        # Loop through each 64-byte message block
         for block in range(len(message_chunk) // 64):
             message_words = self.split_message_block_into_words(
                 message_chunk[block * 64 : block * 64 + 64]
@@ -136,26 +135,26 @@ class RIPEMD320:
                 t = modular_add([rotate_left(w, self.SHIFTS_C[j]), e_c])
                 a_c, e_c, d_c, c_c, b_c = e_c, d_c, rotate_left(c_c, 10), b_c, t
 
-            if j == 15:
-                t = b
-                b = b_c
-                b_c = t
-            elif j == 31:
-                t = d
-                d = d_c
-                d_c = t
-            elif j == 47:
-                t = a
-                a = a_c
-                a_c = t
-            elif j == 63:
-                t = c
-                c = c_c
-                c_c = t
-            elif j == 79:
-                t = e
-                e = e_c
-                e_c = t
+                if j == 15:
+                    t = b
+                    b = b_c
+                    b_c = t
+                elif j == 31:
+                    t = d
+                    d = d_c
+                    d_c = t
+                elif j == 47:
+                    t = a
+                    a = a_c
+                    a_c = t
+                elif j == 63:
+                    t = c
+                    c = c_c
+                    c_c = t
+                elif j == 79:
+                    t = e
+                    e = e_c
+                    e_c = t
 
             self.h0 = modular_add([self.h0, a])
             self.h1 = modular_add([self.h1, b])
@@ -169,6 +168,3 @@ class RIPEMD320:
             self.h9 = modular_add([self.h9, e_c])
 
         return self.register_values_to_hex_string()
-
-
-print(RIPEMD320().generate_hash("abc"))

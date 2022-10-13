@@ -45,6 +45,7 @@ from hashbase import (
     SHA512_224,
     SHA512_256,
     RIPEMD128,
+    RIPEMD160
     CRC8,
     CRC16,
 )
@@ -52,7 +53,7 @@ from hashbase import (
 
 Generate the hash of the input string
 ```python
-message: str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"
+message: str = "password"
 
 print(f"MD2: {MD2().generate_hash(message)}")
 print(f"MD4: {MD4().generate_hash(message)}")
@@ -65,25 +66,27 @@ print(f"SHA-512: {SHA512().generate_hash(message)}")
 print(f"SHA-512/224: {SHA512_224().generate_hash(message)}")
 print(f"SHA-512/256: {SHA512_256().generate_hash(message)}")
 print(f"RIPEMD-128: {RIPEMD128().generate_hash(message)}")
+print(f"RIPEMD-160: {RIPEMD160().generate_hash(message)}")
 print(f"CRC-8: {CRC8().generate_hash(message)}")
 print(f"CRC-16: {CRC16().generate_hash(message)}")
 ```
 
 The output of the above cell
 ```
-MD2: ebd512bd0162b1c3723f3326f352f50d
-MD4: c9066409e6cd86045088ab7e130b7c51
-MD5: 641ba60288c17a2da5090077eb8958ad
-SHA-1: ad75aab2b0f1b220dcba62f48ce86b387aad225f
-SHA-224: c50557bb4de98a3efd31b24cab5b8fe0ed9e081bdd5a2842c646e007
-SHA-256: aaa7932dcc5db1e35047bcd1bb857f85c23fc647aebd08290b626b797a336e24
-SHA-384: 13fbfe276cd33cf7f219428be7216ed72f913fcf529902b9ff073300fd92f335b4a3e85729d6a1bbc73bca5475e52b8a
-SHA-512: cd2abc78ef9694299e3bda722f9535735e4481a07cc422e1609dbd67b126b82f1b72f829f7c4074ded396d25d8363872b60197a421f5f46a1eb430797eb3cfae
-SHA-512/224: 4b685ee6fb3fa679785512dd0178c3523c1c4f11cd88ef207ffc8500
-SHA-512/256: 4110ce7e37cde62c723f1ef2b7826ff02712a6789642453e5ab9a6ccbde8b0c5
-RIPEMD-128: 9eb4516a0b0cfedd3e5cf41eb7c85285
-CRC-8: 0x15
-CRC-16: 0x3958
+MD2: f03881a88c6e39135f0ecc60efd609b9
+MD4: 8a9d093f14f8701df17732b2bb182c74
+MD5: 5f4dcc3b5aa765d61d8327deb882cf99
+SHA-1: 5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
+SHA-224: d63dc919e201d7bc4c825630d2cf25fdc93d4b2f0d46706d29038d01
+SHA-256: 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
+SHA-384: a8b64babd0aca91a59bdbb7761b421d4f2bb38280d3a75ba0f21f2bebc45583d446c598660c94ce680c47d19c30783a7
+SHA-512: b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+SHA-512/224: f2356967afbae0c00f7a58d28a126fe034d555397d0d0772d1427c98
+SHA-512/256: f3f22d82ccf54a92cfc584d9f1531cbf29b11b513f7f68a20a2fa707f3450220
+RIPEMD-128: c9c6d316d6dc4d952a789fd4b8858ed7
+RIPEMD-160: 2c08e8f5884750a7b99f6f2f342fc638db25ff31
+CRC-8: 0x4f
+CRC-16: 0x7e5b
 ```
 
 ## 📦 Contents <a name = "contents"></a>
@@ -104,6 +107,7 @@ CRC-16: 0x3958
 
 ### RIPE Message Digest (RIPEMD)
 - RIPEMD-128 (`hashbase.RIPEMD128`)
+- RIPEMD-160 (`hashbase.RIPEMD160`)
 
 ### Cyclic Redundancy Check (CRC)
 - CRC-8 (`hashbase.CRC8`)

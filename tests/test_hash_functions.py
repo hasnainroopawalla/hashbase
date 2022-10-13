@@ -13,6 +13,7 @@ from hashbase import (
     SHA512_224,
     SHA512_256,
     RIPEMD128,
+    RIPEMD160,
 )
 
 
@@ -61,4 +62,8 @@ class TestHashFunctions(unittest.TestCase):
             self.assertEqual(
                 RIPEMD128().generate_hash(test_case["message"]),
                 test_case["expected"]["RIPEMD128"],
+            )
+            self.assertEqual(
+                RIPEMD160().generate_hash(test_case["message"]),
+                test_case["expected"]["RIPEMD160"],
             )

@@ -94,36 +94,36 @@ class RIPEMD128:
             message_words = self.split_message_block_into_words(
                 message_chunk[block * 64 : block * 64 + 64]
             )
-            curr_a, curr_b, curr_c, curr_d = self.h0, self.h1, self.h2, self.h3
-            curr_a_c, curr_b_c, curr_c_c, curr_d_c = self.h0, self.h1, self.h2, self.h3
+            a, b, c, d = self.h0, self.h1, self.h2, self.h3
+            a_c, b_c, c_c, d_c = self.h0, self.h1, self.h2, self.h3
 
             for j in range(64):
                 w = modular_add(
                     [
-                        curr_a,
-                        self.F(j, curr_b, curr_c, curr_d),
+                        a,
+                        self.F(j, b, c, d),
                         message_words[self.R[j]],
                         self.K[j],
                     ]
                 )
                 t = rotate_left(w, self.SHIFTS[j])
-                curr_a, curr_d, curr_c, curr_b = curr_d, curr_c, curr_b, t
+                a, d, c, b = d, c, b, t
 
                 w = modular_add(
                     [
-                        curr_a_c,
-                        self.F(63 - j, curr_b_c, curr_c_c, curr_d_c),
+                        a_c,
+                        self.F(63 - j, b_c, c_c, d_c),
                         message_words[self.R_C[j]],
                         self.K_C[j],
                     ]
                 )
                 t = rotate_left(w, self.SHIFTS_C[j])
-                curr_a_c, curr_d_c, curr_c_c, curr_b_c = curr_d_c, curr_c_c, curr_b_c, t
+                a_c, d_c, c_c, b_c = d_c, c_c, b_c, t
 
-            t = modular_add([self.h1, curr_c, curr_d_c])
-            self.h1 = modular_add([self.h2, curr_d, curr_a_c])
-            self.h2 = modular_add([self.h3, curr_a, curr_b_c])
-            self.h3 = modular_add([self.h0, curr_b, curr_c_c])
+            t = modular_add([self.h1, c, d_c])
+            self.h1 = modular_add([self.h2, d, a_c])
+            self.h2 = modular_add([self.h3, a, b_c])
+            self.h3 = modular_add([self.h0, b, c_c])
             self.h0 = t
 
         return self.register_values_to_hex_string()

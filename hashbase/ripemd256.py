@@ -3,9 +3,9 @@ from typing import List
 from hashbase.utils import rotate_left, modular_add, apply_message_padding
 
 
-class RIPEMD128:
-    """The RIPEMD-128 algorithm is a cryptographic hashing function used to produce a 128-bit hash.
-    https://homes.esat.kuleuven.be/~bosselae/ripemd/rmd128.txt
+class RIPEMD256:
+    """The RIPEMD-256 algorithm is a cryptographic hashing function used to produce a 256-bit hash.
+    https://homes.esat.kuleuven.be/~bosselae/ripemd/rmd256.txt
     """
 
     def __init__(self) -> None:
@@ -13,6 +13,10 @@ class RIPEMD128:
         self.h1: int = 0xEFCDAB89
         self.h2: int = 0x98BADCFE
         self.h3: int = 0x10325476
+        self.h4: int = 0x76543210
+        self.h5: int = 0xFEDCBA98
+        self.h6: int = 0x89ABCDEF
+        self.h7: int = 0x01234567
         self.K: List[int] = (
             [0x00000000] * 16
             + [0x5A827999] * 16
@@ -64,38 +68,37 @@ class RIPEMD128:
         return f
 
     def register_values_to_hex_string(self) -> str:
-        """Read the values of the 4 registers and convert them to a hexadecimal string.
+        """Read the values of the 8 registers and convert them to a hexadecimal string.
 
         Returns:
-            str: The hexadecimal string represented by the 4 registers.
+            str: The hexadecimal string represented by the 8 registers.
         """
-        # Create the message digest from the final values of the 4 registers (a, b, c, d)
         digest = sum(
             register_value << (32 * i)
-            for i, register_value in enumerate([self.h0, self.h1, self.h2, self.h3])
+            for i, register_value in enumerate(
+                [self.h0, self.h1, self.h2, self.h3, self.h4, self.h5, self.h6, self.h7]
+            )
         )
-        # Convert the digest to a hexadecimal string
-        return digest.to_bytes(16, byteorder="little").hex()
+        return digest.to_bytes(32, byteorder="little").hex()
 
     def generate_hash(self, message: str) -> str:
-        """Generates a 128-bit RIPEMD-128 hash of the input message.
+        """Generates a 256-bit RIPEMD-256 hash of the input message.
 
         Args:
             message (str): The input message/text.
 
         Returns:
-            str: The 128-bit RIPEMD-128 hash of the message.
+            str: The 256-bit RIPEMD-256 hash of the message.
         """
         message_in_bytes = bytearray(message, "ascii")
         message_chunk = apply_message_padding(message_in_bytes, "little")
 
-        # Loop through each 64-byte message block
         for block in range(len(message_chunk) // 64):
             message_words = self.split_message_block_into_words(
                 message_chunk[block * 64 : block * 64 + 64]
             )
             a, b, c, d = self.h0, self.h1, self.h2, self.h3
-            a_c, b_c, c_c, d_c = self.h0, self.h1, self.h2, self.h3
+            a_c, b_c, c_c, d_c = self.h4, self.h5, self.h6, self.h7
 
             for j in range(64):
                 w = modular_add(
@@ -115,10 +118,30 @@ class RIPEMD128:
                 t = rotate_left(w, self.SHIFTS_C[j])
                 a_c, d_c, c_c, b_c = d_c, c_c, b_c, t
 
-            t = modular_add([self.h1, c, d_c])
-            self.h1 = modular_add([self.h2, d, a_c])
-            self.h2 = modular_add([self.h3, a, b_c])
-            self.h3 = modular_add([self.h0, b, c_c])
-            self.h0 = t
+                if j == 15:
+                    t = a
+                    a = a_c
+                    a_c = t
+                elif j == 31:
+                    t = b
+                    b = b_c
+                    b_c = t
+                elif j == 47:
+                    t = c
+                    c = c_c
+                    c_c = t
+                elif j == 63:
+                    t = d
+                    d = d_c
+                    d_c = t
+
+            self.h0 = modular_add([self.h0, a])
+            self.h1 = modular_add([self.h1, b])
+            self.h2 = modular_add([self.h2, c])
+            self.h3 = modular_add([self.h3, d])
+            self.h4 = modular_add([self.h4, a_c])
+            self.h5 = modular_add([self.h5, b_c])
+            self.h6 = modular_add([self.h6, c_c])
+            self.h7 = modular_add([self.h7, d_c])
 
         return self.register_values_to_hex_string()

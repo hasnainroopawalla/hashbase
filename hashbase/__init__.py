@@ -10,5 +10,7 @@ from hashbase.sha512_256 import *
 from hashbase.sha384 import *
 from hashbase.ripemd128 import *
 from hashbase.ripemd160 import *
+from hashbase.ripemd256 import *
+from hashbase.ripemd320 import *
 from hashbase.crc8 import *
 from hashbase.crc16 import *

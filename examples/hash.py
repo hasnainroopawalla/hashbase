@@ -12,6 +12,7 @@ from hashbase import (
     RIPEMD128,
     RIPEMD160,
     RIPEMD256,
+    RIPEMD320,
     CRC8,
     CRC16,
 )
@@ -32,5 +33,6 @@ print(f"SHA-512/256: {SHA512_256().generate_hash(message)}")
 print(f"RIPEMD-128: {RIPEMD128().generate_hash(message)}")
 print(f"RIPEMD-160: {RIPEMD160().generate_hash(message)}")
 print(f"RIPEMD-256: {RIPEMD256().generate_hash(message)}")
+print(f"RIPEMD-320: {RIPEMD320().generate_hash(message)}")
 print(f"CRC-8: {CRC8().generate_hash(message)}")
 print(f"CRC-16: {CRC16().generate_hash(message)}")

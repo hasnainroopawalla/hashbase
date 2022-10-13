@@ -45,7 +45,9 @@ from hashbase import (
     SHA512_224,
     SHA512_256,
     RIPEMD128,
-    RIPEMD160
+    RIPEMD160,
+    RIPEMD256,
+    RIPEMD320,
     CRC8,
     CRC16,
 )
@@ -67,6 +69,8 @@ print(f"SHA-512/224: {SHA512_224().generate_hash(message)}")
 print(f"SHA-512/256: {SHA512_256().generate_hash(message)}")
 print(f"RIPEMD-128: {RIPEMD128().generate_hash(message)}")
 print(f"RIPEMD-160: {RIPEMD160().generate_hash(message)}")
+print(f"RIPEMD-256: {RIPEMD256().generate_hash(message)}")
+print(f"RIPEMD-320: {RIPEMD320().generate_hash(message)}")
 print(f"CRC-8: {CRC8().generate_hash(message)}")
 print(f"CRC-16: {CRC16().generate_hash(message)}")
 ```
@@ -85,6 +89,8 @@ SHA-512/224: f2356967afbae0c00f7a58d28a126fe034d555397d0d0772d1427c98
 SHA-512/256: f3f22d82ccf54a92cfc584d9f1531cbf29b11b513f7f68a20a2fa707f3450220
 RIPEMD-128: c9c6d316d6dc4d952a789fd4b8858ed7
 RIPEMD-160: 2c08e8f5884750a7b99f6f2f342fc638db25ff31
+RIPEMD-256: f94cf96c79103c3ccad10d308c02a1db73b986e2c48962e96ecd305e0b80ef1b
+RIPEMD-320: c571d82e535de67ff5f87e417b3d53125f2d83ed7598b89d74483e6c0dfe8d86e88b380249fc8fb4
 CRC-8: 0x4f
 CRC-16: 0x7e5b
 ```
@@ -108,6 +114,8 @@ CRC-16: 0x7e5b
 ### RIPE Message Digest (RIPEMD)
 - RIPEMD-128 (`hashbase.RIPEMD128`)
 - RIPEMD-160 (`hashbase.RIPEMD160`)
+- RIPEMD-256 (`hashbase.RIPEMD256`)
+- RIPEMD-320 (`hashbase.RIPEMD320`)
 
 ### Cyclic Redundancy Check (CRC)
 - CRC-8 (`hashbase.CRC8`)

@@ -1,5 +1,10 @@
 # Change Log
 
+## 14-Oct-2022 [1.1.4]
+Added the following hash functions:
+  - RIPEMD-256 (`hashbase.RIPEMD256`)
+  - RIPEMD-320 (`hashbase.RIPEMD320`)
+  
 ## 13-Oct-2022 [1.1.3]
 Added the following hash function:
   - RIPEMD-160 (`hashbase.RIPEMD160`)

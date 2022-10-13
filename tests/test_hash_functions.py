@@ -15,7 +15,7 @@ from hashbase import (
     RIPEMD128,
     RIPEMD160,
     RIPEMD256,
-    RIPEMD320
+    RIPEMD320,
 )
 
 
@@ -23,7 +23,7 @@ class TestHashFunctions(unittest.TestCase):
     def test_hash_functions(self):
         with open("tests/test_cases.json", "r") as f:
             test_cases = json.load(f)
-            
+
         for test_case in test_cases:
             self.assertEqual(
                 MD2().generate_hash(test_case["message"]), test_case["expected"]["MD2"]

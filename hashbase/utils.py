@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 
 def rotate_left(x: int, s: int, size: int = 32) -> int:
@@ -77,7 +77,7 @@ def modular_add(nums: List[int], size: int = 32) -> int:
 
 def apply_message_padding(
     message: bytearray,
-    message_length_byteorder: str,
+    message_length_byteorder: Any,
     message_length_padding_bits: int = 64,
     message_chunk_size_bits: int = 512,
 ) -> bytearray:

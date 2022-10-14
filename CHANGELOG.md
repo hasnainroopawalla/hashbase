@@ -1,7 +1,7 @@
 # Change Log
 
 ## 15-Oct-2022 [1.1.5]
-- Removed dependency on `typing.Literal` in  `utils.py` to support python >= 3.6
+- Removed dependency on `typing.Literal` in `utils.py` to support python >= 3.6
 
 ## 14-Oct-2022 [1.1.4]
 Added the following hash functions:

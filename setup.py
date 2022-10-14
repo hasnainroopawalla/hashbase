@@ -8,7 +8,7 @@ with open(os.path.join(repository_dir, "README.md")) as fh:
 
 setup(
     name="hashbase",
-    version="1.1.4",
+    version="1.1.5",
     packages=find_packages(exclude="tests"),
     description="A collection of cryptographic hashing algorithms implemented in Python",
     long_description=long_description,
